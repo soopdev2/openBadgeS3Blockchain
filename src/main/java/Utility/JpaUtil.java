@@ -13,7 +13,9 @@ import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.Persistence;
 import jakarta.persistence.Query;
+import jakarta.persistence.TypedQuery;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -194,8 +196,8 @@ public class JpaUtil {
             return null;
         }
     }
-    
-     public static Transazione saveTxHashAndHashHexOnDb(Transazione transazione) {
+
+    public static Transazione saveTxHashAndHashHexOnDb(Transazione transazione) {
         EntityTransaction tx = em.getTransaction();
         InfoTrack infotrack = new InfoTrack();
         infotrack.setDataEvento(LocalDateTime.now());
@@ -212,6 +214,56 @@ public class JpaUtil {
                 tx.rollback();
             }
             infotrack.setDescrizione("ERRORE - 500 - Non è stato possibile effettuare il salvataggio della transazione: " + e.getMessage());
+            salvaInfoTrack(infotrack);
+            return null;
+        }
+    }
+
+    public long countTransazioni() {
+        try {
+            Query query = em.createQuery("SELECT COUNT(t) FROM Transazione t");
+            return (long) query.getSingleResult();
+        } catch (Exception e) {
+            return 0;
+        }
+    }
+
+    public List<Transazione> ricercaTransazioni(int start, int length) {
+        try {
+            TypedQuery<Transazione> query = em.createQuery("SELECT t FROM Transazione t ORDER BY t.id ASC", Transazione.class);
+            query.setFirstResult(start);
+            query.setMaxResults(length);
+            return query.getResultList();
+        } catch (Exception e) {
+            return new ArrayList<>();
+        }
+    }
+
+    public static Transazione trovaTransazioneByHash(String txHash) {
+        InfoTrack infotrack = new InfoTrack();
+        infotrack.setDataEvento(LocalDateTime.now());
+        infotrack.setAzione("JpaUtil - trovaTransazioneByHash() - ricerca transazione per hash.");
+
+        try {
+            TypedQuery<Transazione> query = em.createQuery(
+                    "SELECT t FROM Transazione t WHERE t.txHash = :txHash", Transazione.class);
+            query.setParameter("txHash", txHash);
+
+            List<Transazione> risultati = query.getResultList();
+
+            if (risultati.isEmpty()) {
+                infotrack.setDescrizione("WARNING - 404 - Nessuna transazione trovata per l'hash: " + txHash);
+                salvaInfoTrack(infotrack);
+                return null;
+            }
+
+            Transazione transazione = risultati.get(0);
+            infotrack.setDescrizione("SUCCESSO - 200 - Transazione recuperata con successo.");
+            salvaInfoTrack(infotrack);
+            return transazione;
+
+        } catch (Exception e) {
+            infotrack.setDescrizione("ERRORE - 500 - Errore durante il recupero della transazione: " + e.getMessage());
             salvaInfoTrack(infotrack);
             return null;
         }

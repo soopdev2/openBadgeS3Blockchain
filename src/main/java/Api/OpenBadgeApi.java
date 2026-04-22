@@ -199,8 +199,8 @@ public class OpenBadgeApi {
             if (hashHex != null) {
                 transazione.setHashHex("0x" + hashHex);
             }
-            if (hashedEmail != null) {
-                transazione.setEmail(hashedEmail);
+            if (email != null) {
+                transazione.setEmail(email);
             }
 
             JpaUtil.saveTxHashAndHashHexOnDb(transazione);

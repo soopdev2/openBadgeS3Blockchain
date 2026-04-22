@@ -57,7 +57,6 @@
                 <li class="nav-item active">
                     <a class="nav-link <%=consult_active%>" href="indexConsult.jsp"><span>Consultazione</span></a>
                 </li>
-
             </ul>
         </div>
     </div>

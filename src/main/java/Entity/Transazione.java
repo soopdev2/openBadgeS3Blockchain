@@ -9,12 +9,14 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 /**
  *
  * @author Salvatore
  */
 @Entity
+@Table(name= "transazione")
 public class Transazione implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -35,6 +37,7 @@ public class Transazione implements Serializable {
     private String hashHex;
 
     private String email;
+    
 
     public String getTxHash() {
         return txHash;

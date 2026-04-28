@@ -4,6 +4,7 @@
  */
 package Utility;
 
+import Entity.Documento;
 import Entity.InfoTrack;
 import Entity.Ruolo;
 import Entity.Transazione;
@@ -94,6 +95,46 @@ public class JpaUtil {
             }
             infotrack.setDescrizione("ERRORE - 500 - Non è stato possibile effettuare la creazione dell'utente: " + e.getMessage());
             salvaInfoTrack(infotrack);
+            return null;
+        }
+    }
+
+    public static Documento salvaDocumento(Documento documento) {
+
+        EntityTransaction tx = em.getTransaction();
+        InfoTrack infotrack = new InfoTrack();
+
+        infotrack.setDataEvento(LocalDateTime.now());
+        infotrack.setAzione("JpaUtil - salvaDocumento() - upload file documento.");
+
+        try {
+            tx.begin();
+
+            documento.setDataUpload(LocalDateTime.now());
+            em.persist(documento);
+
+            tx.commit();
+
+            infotrack.setDescrizione(
+                    "SUCCESSO - 200 - Documento salvato con id " + documento.getId()
+            );
+
+            salvaInfoTrack(infotrack);
+
+            return documento;
+
+        } catch (Exception e) {
+
+            if (tx != null && tx.isActive()) {
+                tx.rollback();
+            }
+
+            infotrack.setDescrizione(
+                    "ERRORE - 500 - Salvataggio documento fallito: " + e.getMessage()
+            );
+
+            salvaInfoTrack(infotrack);
+
             return null;
         }
     }
@@ -268,4 +309,73 @@ public class JpaUtil {
             return null;
         }
     }
+
+    public static Documento findDocumentoByTransazioneId(Long transazioneId) {
+
+        try {
+            return em.createQuery(
+                    "SELECT t.documento FROM Transazione t WHERE t.id = :id",
+                    Documento.class
+            )
+                    .setParameter("id", transazioneId)
+                    .getSingleResult();
+
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+//    public static Transazione salvaTransazione(Transazione transazione) {
+//
+//        EntityTransaction tx = em.getTransaction();
+//        InfoTrack infotrack = new InfoTrack();
+//
+//        infotrack.setDataEvento(LocalDateTime.now());
+//        infotrack.setAzione("JpaUtil - salvaTransazione() - inserimento transazione.");
+//
+//        try {
+//            tx.begin();
+//
+//            em.persist(transazione);
+//
+//            tx.commit();
+//
+//            infotrack.setDescrizione(
+//                    "SUCCESSO - 200 - Transazione salvata con id " + transazione.getId()
+//            );
+//
+//            salvaInfoTrack(infotrack);
+//
+//            return transazione;
+//
+//        } catch (Exception e) {
+//
+//            if (tx != null && tx.isActive()) {
+//                tx.rollback();
+//            }
+//
+//            infotrack.setDescrizione(
+//                    "ERRORE - 500 - Salvataggio transazione fallito: " + e.getMessage()
+//            );
+//
+//            salvaInfoTrack(infotrack);
+//
+//            return null;
+//        }
+//    }
+
+    public static Documento findDocumentoById(Long id) {
+        try {
+            return em.createQuery(
+                    "SELECT d FROM Documento d WHERE d.id = :id",
+                    Documento.class
+            )
+                    .setParameter("id", id)
+                    .getSingleResult();
+
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
 }

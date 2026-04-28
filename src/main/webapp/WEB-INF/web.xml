@@ -8,6 +8,10 @@
         <servlet-name>SearchServlet</servlet-name>
         <servlet-class>servlet.SearchServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>ViewPdfServlet</servlet-name>
+        <servlet-class>servlet.ViewPdfServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>UploadServletAi</servlet-name>
         <url-pattern>/UploadServletAi</url-pattern>
@@ -15,6 +19,10 @@
     <servlet-mapping>
         <servlet-name>SearchServlet</servlet-name>
         <url-pattern>/SearchServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ViewPdfServlet</servlet-name>
+        <url-pattern>/ViewPdfServlet</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

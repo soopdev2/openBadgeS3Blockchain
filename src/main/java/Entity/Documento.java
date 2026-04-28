@@ -9,22 +9,31 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.Lob;
+import java.time.LocalDateTime;
 
 /**
  *
- * @author Salvatore
+ * @author Aldo
  */
 @Entity
-@Table(name = "transazione")
-public class Transazione implements Serializable {
+public class Documento implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    private String nameFile;
+
+    @Lob
+    private byte[] content;
+    
+    //private String filePath;
+
+
+    private LocalDateTime dataUpload;
 
     public Long getId() {
         return id;
@@ -34,45 +43,28 @@ public class Transazione implements Serializable {
         this.id = id;
     }
 
-    private String txHash;
-
-    private String hashHex;
-
-    private String email;
-
-    @OneToOne
-    private Documento docId;
-
-    public String getTxHash() {
-        return txHash;
+    public String getNameFile() {
+        return nameFile;
     }
 
-    public void setTxHash(String txHash) {
-        this.txHash = txHash;
+    public void setNameFile(String nameFile) {
+        this.nameFile = nameFile;
     }
 
-    public String getHashHex() {
-        return hashHex;
+    public byte[] getContent() {
+        return content;
     }
 
-    public void setHashHex(String hashHex) {
-        this.hashHex = hashHex;
+    public void setContent(byte[] content) {
+        this.content = content;
     }
 
-    public String getEmail() {
-        return email;
+    public LocalDateTime getDataUpload() {
+        return dataUpload;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public Documento getDocId() {
-        return docId;
-    }
-
-    public void setDocId(Documento docId) {
-        this.docId = docId;
+    public void setDataUpload(LocalDateTime dataUpload) {
+        this.dataUpload = dataUpload;
     }
 
     @Override
@@ -85,10 +77,10 @@ public class Transazione implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Transazione)) {
+        if (!(object instanceof Documento)) {
             return false;
         }
-        Transazione other = (Transazione) object;
+        Documento other = (Documento) object;
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
@@ -97,7 +89,7 @@ public class Transazione implements Serializable {
 
     @Override
     public String toString() {
-        return "Entity.Transazione[ id=" + id + " ]";
+        return "Entity.Documento[ id=" + id + " ]";
     }
 
 }

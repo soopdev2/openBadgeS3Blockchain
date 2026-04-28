@@ -11,7 +11,6 @@ import java.text.Normalizer;
 import java.time.LocalDateTime;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
-import java.io.File;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.nio.file.Path;
@@ -23,12 +22,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import static org.apache.commons.lang3.exception.ExceptionUtils.getStackTrace;
 import org.apache.commons.text.StringEscapeUtils;
-import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
-import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
-import software.amazon.awssdk.core.sync.RequestBody;
-import software.amazon.awssdk.regions.Region;
-import software.amazon.awssdk.services.s3.S3Client;
-import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
 /**
  *

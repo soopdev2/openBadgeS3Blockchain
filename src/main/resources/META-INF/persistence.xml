@@ -3,6 +3,7 @@
   <!--  Define Persistence Unit  -->
   <persistence-unit name="openbadge">
     <class>Entity.Transazione</class>
+    <class>Entity.Documento</class>
     <properties>
       <property name="jakarta.persistence.jdbc.driver" value="com.mysql.cj.jdbc.Driver"/>
       <property name="jakarta.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/openbadge"/>

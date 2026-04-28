@@ -22,7 +22,8 @@ $(document).ready(function () {
             {"data": "id"},
             {"data": "email"},
             {"data": "hashhex"},
-            {"data": "txhash"}
+            {"data": "txhash"},
+            {"data": "action"}
         ],
         "pagingType": "full_numbers",
         "pageLength": 5,

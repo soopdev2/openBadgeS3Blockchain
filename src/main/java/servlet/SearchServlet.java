@@ -4,6 +4,7 @@
  */
 package servlet;
 
+import Entity.Documento;
 import Entity.Transazione;
 import Utility.JpaUtil;
 import Utility.Utils;
@@ -66,9 +67,17 @@ public class SearchServlet extends HttpServlet {
     protected void consultaTransazioni(HttpServletRequest request, HttpServletResponse response) {
         try {
 
-            int draw = Utils.tryParseInt(request.getParameter("draw"));
-            int start = Utils.tryParseInt(request.getParameter("start"));
-            int length = Utils.tryParseInt(request.getParameter("length"));
+            int draw = Utils.tryParseInt(
+                    request.getParameter("draw") != null ? request.getParameter("draw") : "0"
+            );
+
+            int start = Utils.tryParseInt(
+                    request.getParameter("start") != null ? request.getParameter("start") : "0"
+            );
+
+            int length = Utils.tryParseInt(
+                    request.getParameter("length") != null ? request.getParameter("length") : "10"
+            );
 
             if (length <= 0) {
                 length = 10;
@@ -83,13 +92,30 @@ public class SearchServlet extends HttpServlet {
             JsonArray jsonData = new JsonArray();
 
             for (Transazione t : transazioni) {
-                JsonObject row = new JsonObject();
-                row.addProperty("id", t.getId());
-                row.addProperty("email", t.getEmail() != null ? t.getEmail() : "N/D");
-                row.addProperty("hashhex", t.getHashHex() != null ? t.getHashHex() : "N/D");
-                row.addProperty("txhash", t.getTxHash() != null ? t.getTxHash() : "N/D");
 
-                jsonData.add(row);
+                Documento doc = t.getDocId();
+
+                Long docId = (doc != null) ? doc.getId() : null;
+
+                String action = "";
+
+                if (docId != null) {
+                    action = "<button class='btn btn-sm btn-primary' "
+                            + "onclick=\"viewPdf(" + docId + ");\""
+                            + ">"
+                            + "<i class='fa fa-eye'></i>"
+                            + "VISUALIZZA"
+                            + "</button>";
+
+                    JsonObject row = new JsonObject();
+                    row.addProperty("id", t.getId());
+                    row.addProperty("email", t.getEmail() != null ? t.getEmail() : "N/D");
+                    row.addProperty("hashhex", t.getHashHex() != null ? t.getHashHex() : "N/D");
+                    row.addProperty("txhash", t.getTxHash() != null ? t.getTxHash() : "N/D");
+                    row.addProperty("action", action);
+                    jsonData.add(row);
+
+                }
             }
 
             jsonResponse.addProperty("draw", draw);
@@ -105,6 +131,8 @@ public class SearchServlet extends HttpServlet {
 
         } catch (Exception e) {
             Utils.estraiEccezione(e);
+            e.printStackTrace();
+            System.out.println("ERRORE ----------------------------- " + e);
         }
     }
 

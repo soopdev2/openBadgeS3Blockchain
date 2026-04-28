@@ -1,6 +1,8 @@
 package servlet;
 
+import Entity.Documento;
 import Utility.GroqUtil;
+import Utility.JpaUtil;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.http.*;
@@ -15,6 +17,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
 
 import java.awt.image.BufferedImage;
 import java.io.*;
@@ -52,7 +55,35 @@ public class UploadServletAi extends HttpServlet {
             Files.copy(input, file.toPath(), java.nio.file.StandardCopyOption.REPLACE_EXISTING);
         }
 
+        // ===== SALVATAGGIO FILE SU DB =====
+        byte[] fileBytes = Files.readAllBytes(file.toPath());
+
+        /*String uploadDir = "/opt/uploads/";   // produzione
+String filePath = uploadDir + UUID.randomUUID() + "_" + originalName;
+
+Files.copy(filePart.getInputStream(), Path.of(filePath));
+
+Documento doc = new Documento();
+doc.setNameFile(originalName);
+doc.setFilePath(filePath);
+
+JpaUtil.salvaDocumento(doc);
+         */
+        Documento doc = new Documento();
+        doc.setNameFile(originalName);
+        doc.setContent(fileBytes);
+
+        JpaUtil.salvaDocumento(doc);
+
         try {
+
+            /*  String tessPath = getServletContext().getRealPath("/WEB-INF/classes/tessdata");
+
+            ITesseract tesseract = new Tesseract();
+            tesseract.setDatapath(tessPath);
+            tesseract.setLanguage("ita");*/
+            
+            
             ITesseract tesseract = new Tesseract();
             tesseract.setDatapath("C:/tesseract");
             tesseract.setLanguage("ita");
@@ -199,8 +230,8 @@ TESTO:
             System.out.println(safeJsonPayload);
 
             String apiUrl
-                    = "http://localhost:8080/OpenBadgeS3/webresources/openbadge/genera"
-                    + "?user_id=1";
+                    = "http://localhost:8091/OpenBadgeS3/webresources/openbadge/genera"
+                    + "?user_id=1&doc_id=" + doc.getId();
 
             HttpClient client = HttpClient.newHttpClient();
 
@@ -286,7 +317,7 @@ TESTO:
 
             return cleaned;
 
-        } catch (Exception e) {
+        } catch (JsonSyntaxException e) {
             System.err.println("JSON Groq non valido: " + response);
             return "INVALID";
         }

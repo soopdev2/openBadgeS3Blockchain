@@ -5,6 +5,7 @@
 package Api;
 
 import ENUM.TipoAccessoEnum;
+import Entity.Documento;
 import Entity.InfoTrack;
 import Entity.Transazione;
 import Entity.Utente;
@@ -85,6 +86,7 @@ public class OpenBadgeApi {
     @Produces(MediaType.APPLICATION_JSON)
     public Response generaBadge(
             @QueryParam("user_id") String user_id_param,
+            @QueryParam("doc_id") String doc_id,
             @QueryParam("selected_user_id") String selected_user_id_param,
             Map<String, Object> input) {
 
@@ -201,6 +203,10 @@ public class OpenBadgeApi {
             }
             if (email != null) {
                 transazione.setEmail(email);
+            }
+            Documento doc = JpaUtil.findDocumentoById(Long.parseLong(doc_id));
+            if (doc_id != null) {
+                transazione.setDocId(doc);
             }
 
             JpaUtil.saveTxHashAndHashHexOnDb(transazione);

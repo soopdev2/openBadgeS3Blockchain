@@ -88,6 +88,7 @@
                                         <th scope="col" class="text-uppercase small fw-bold">Email Utente</th>
                                         <th scope="col" class="text-uppercase small fw-bold">Hash Assertion</th>
                                         <th scope="col" class="text-uppercase small fw-bold">Hash Transazione</th>
+                                        <th scope="col" class="text-uppercase small fw-bold">Azione</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -269,6 +270,20 @@
                     }, 600);
                 }
             });
+
+            function viewPdf(id) {
+                if (!id) {
+                    alert("Documento non disponibile");
+                    return;
+                }
+
+                window.open(
+                        "ViewPdfServlet?id=" + id,
+                        "_blank"
+                        );
+            }
+
+
         </script>
     </body>
 </html>
